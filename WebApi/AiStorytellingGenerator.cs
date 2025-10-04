@@ -6,16 +6,21 @@ using LLama.Sampling;
 
 class AiStorytellingGenerator : IStorytellingGenerator
 {
-    private const string modelPath = @"C:\\Users\\felic\\AppData\\Local\\llama.cpp\\unsloth_Qwen3-4B-GGUF_Qwen3-4B-Q8_0.gguf"; // change it to your own model path.
+    private readonly string? _modelPath;
     private readonly LLamaWeights _model;
     private readonly LLamaContext _context;
     private readonly ModelParams _parameters;
     private readonly InferenceParams _inferenceParams;
     private readonly InteractiveExecutor _executor;
 
-    public AiStorytellingGenerator()
+    public AiStorytellingGenerator(IConfiguration configuration)
     {
-        _parameters = new ModelParams(modelPath)
+        _modelPath = configuration.GetConnectionString("ModelPath");
+        if (string.IsNullOrEmpty(_modelPath))
+        {
+            throw new FileNotFoundException("Model file not found. Please check the ModelPath configuration.", _modelPath);
+        }
+        _parameters = new ModelParams(_modelPath)
         {
             ContextSize = 4096,
             Embeddings = true,
@@ -38,7 +43,7 @@ class AiStorytellingGenerator : IStorytellingGenerator
     public async IAsyncEnumerable<string> GenerateStoryAsync(string prompt, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         ChatHistory chatHistory = new ChatHistory();
-        chatHistory.AddMessage(AuthorRole.System, "Assist the user in creating a story. Keep the story short with less than 200 words.");
+        // chatHistory.AddMessage(AuthorRole.System, "Assist the user in creating a story. Keep the story short with less than 200 words.");
         ChatSession session = new(_executor, chatHistory);
         await foreach (string token in session.ChatAsync(new ChatHistory.Message(AuthorRole.User, prompt), _inferenceParams, cancellationToken))
         {
