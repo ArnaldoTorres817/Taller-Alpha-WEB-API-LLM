@@ -6,5 +6,5 @@ Connection: keep-alive
 Accept: */*
 
 {
-    "userPrompt": "Write a short story of medieval times with dragons. /no_think"
+    "userPrompt": "Como Miguel cruzo la frontera entre Mexico y Estados Unidos"
 }

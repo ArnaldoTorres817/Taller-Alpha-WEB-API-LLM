@@ -29,7 +29,7 @@ class AiStorytellingGenerator : IStorytellingGenerator
         _inferenceParams = new InferenceParams()
         {
             MaxTokens = 256,
-            AntiPrompts = new List<string> { "User:" },
+            AntiPrompts = new List<string> { "Fin.", "User:" },
             SamplingPipeline = new DefaultSamplingPipeline()
             {
                 Temperature = 0.8f,
@@ -39,11 +39,11 @@ class AiStorytellingGenerator : IStorytellingGenerator
         _context = _model.CreateContext(_parameters);
         _executor = new InteractiveExecutor(_context);
     }
-    
+
     public async IAsyncEnumerable<string> GenerateStoryAsync(string prompt, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         ChatHistory chatHistory = new ChatHistory();
-        // chatHistory.AddMessage(AuthorRole.System, "Assist the user in creating a story. Keep the story short with less than 200 words.");
+        chatHistory.AddMessage(AuthorRole.System, $@"Eres un escritor creativo y talentoso. Crea un cuento corto de 200 palabras basado en el siguiente titulo: '{prompt}'. Evita incluir contenido inapropiado o sensible. Responde solo con el cuento. Comienza la historia con 'Había una vez...' y termina con 'Fin.'.");
         ChatSession session = new(_executor, chatHistory);
         await foreach (string token in session.ChatAsync(new ChatHistory.Message(AuthorRole.User, prompt), _inferenceParams, cancellationToken))
         {
