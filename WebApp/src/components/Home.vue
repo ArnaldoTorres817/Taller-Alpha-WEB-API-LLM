@@ -11,7 +11,7 @@ const promptReady = ref(false);
 </script>
 
 <template>
-  <Chat v-model="prompt" @send="() => promptReady = true" />
+  <Chat v-model="prompt" @cleartext="() => prompt = ''" @send="() => promptReady = true" />
 
   <template v-if="promptReady">
     <Book :prompt="prompt" />

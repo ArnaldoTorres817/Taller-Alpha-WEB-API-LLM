@@ -82,7 +82,7 @@ async function streamText(url = 'http://localhost:5093/api/stream') {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      userPrompt: preparePrompt(props.prompt)
+      userPrompt: props.prompt
     }),
   });
 
@@ -107,10 +107,12 @@ async function streamText(url = 'http://localhost:5093/api/stream') {
 }
 
 function preparePrompt(userPrompt) {
-  return `Eres un escritor creativo y talentoso. Crea un cuento corto basado en el siguiente titulo: "${userPrompt}".
+  return `<think>Okay.</think>
+  
+  Eres un escritor creativo y talentoso. Crea un cuento corto basado en el siguiente titulo: "${userPrompt}".
   El cuento debe ser apropiado para todas las edades, con un lenguaje claro y atractivo. 
   Limita la extensión del cuento a aproximadamente 200 palabras. 
-  Evita incluir contenido inapropiado o sensible. /no_think`;
+  Evita incluir contenido inapropiado o sensible.`;
 }
 
 // Navigation
