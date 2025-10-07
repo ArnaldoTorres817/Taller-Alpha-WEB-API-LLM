@@ -7,14 +7,21 @@ defineProps({})
 const prompt = ref('');
 
 const promptReady = ref(false);
+const bookKey = ref(0);
+
+const handleSend = () => {
+  promptReady.value = false; // Unmount Book
+  bookKey.value++;           // Change key to force remount
+  promptReady.value = true;  // Remount Book
+};
 
 </script>
 
 <template>
-  <Chat v-model="prompt" @cleartext="() => prompt = ''" @send="() => promptReady = true" />
+  <Chat v-model="prompt" @cleartext="() => prompt = ''" @send="handleSend" />
 
   <template v-if="promptReady">
-    <Book :prompt="prompt" />
+    <Book :prompt="prompt" :key="bookKey" />
   </template>
 </template>
 
